@@ -1,18 +1,10 @@
 <template>
-    <v-container class="fill-height" fluid>
-        <v-row align="center" justify="center">
-          <v-col class="text-center">
-            <v-tooltip left>
-              <template v-slot:activator="{ on }">
-                <v-btn :href="source" icon large target="_blank" v-on="on">
-                  <v-icon large>mdi-code-tags</v-icon>
-                </v-btn>
-              </template>
-              <span>Home</span>
-            </v-tooltip>
-          </v-col>
-        </v-row>
-      </v-container>
+  <v-card>
+    <v-tabs centered>
+        <v-tab>Главная</v-tab>
+        <v-tab>Об автошколе</v-tab>
+    </v-tabs>
+  </v-card>
 </template>
 
 <script>
