@@ -13,7 +13,7 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar app color="indigo" dark>
+    <v-app-bar app color="green darken-2" dark>
         <!-- <v-container class="d-inline-flex align-baseline"> -->
         <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
         <!-- <v-toolbar-title class="d-inline-flex"> -->
