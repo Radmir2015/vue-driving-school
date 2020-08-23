@@ -9,16 +9,18 @@
       <v-card class="my-2">
         <!-- <h3 class="text-center title">Пару слов об автошколе + карта</h3> -->
         <v-row>
-          <v-col cols="10" offset="1" class="history" style="text-indent: 2em">
-            <p class="text-justify text--secondary">
-              <strong>Каменский автомотоклуб</strong> был основан <strong>8 сентября 1955 года</strong> боевым летчиком подполковником Сахаровым Василием Ивановичем.
-              Помимо дополнительных секций: мотоспорта, собаководства и радиоспорта основным направлением было <strong>подготовка водителей</strong> для Советской армии и народного хозяйства.
-              За 60 лет своего существования было подготовлено более <strong>100 тысяч</strong> водителей.</p>
+          <v-col sm="10" offset-sm="1" class="history" style="text-indent: 2em">
+            <v-container class="px-6 pa-sm-0">
+              <p class="text-justify text--secondary">
+                <strong>Каменский автомотоклуб</strong> был основан <strong>8 сентября 1955 года</strong> боевым летчиком подполковником Сахаровым Василием Ивановичем.
+                Помимо дополнительных секций: мотоспорта, собаководства и радиоспорта основным направлением было <strong>подготовка водителей</strong> для Советской армии и народного хозяйства.
+                За 60 лет своего существования было подготовлено более <strong>100 тысяч</strong> водителей.</p>
 
-            <p class="text-justify text--secondary">В <strong>1974 году</strong> на базе автомотоклуба была создана автошкола ДОСААФ.</p>
+              <p class="text-justify text--secondary mb-0 mb-sm-4">В <strong>1974 году</strong> на базе автомотоклуба была создана автошкола ДОСААФ.</p>
+            </v-container>
             <v-expansion-panels flat>
             <v-expansion-panel>
-              <v-expansion-panel-header style="font-size: 16px">
+              <v-expansion-panel-header class="px-sm-0" style="font-size: 16px">
                 <p class="text-justify text--secondary ma-0">
                   История автошколы
                 </p>
@@ -70,7 +72,7 @@
         <v-divider></v-divider>
       </v-card>
       <v-card class="my-2">
-        <h2 class="text-center title">Доступные категории + цены</h2>
+        <h2 class="text-center title">Доступные категории</h2>
         <v-row>
           <v-col md="8" offset-md="2">
             <v-card outlined>
@@ -91,7 +93,7 @@
           </v-col>
         </v-row>
         <h2 class="text-center title">Автопарк</h2>
-        <v-tabs centered show-arrows center-active icons-and-text v-model="tab">
+        <v-tabs centered show-arrows center-active icons-and-text v-model="tab" color="green darken-3">
           <v-tab>Категория А<v-icon>mdi-bike</v-icon></v-tab>
           <v-tab>Категория В<v-icon>mdi-car</v-icon></v-tab>
           <v-tab>Категория С<v-icon>mdi-truck</v-icon></v-tab>
@@ -129,7 +131,7 @@
         <!-- <v-divider></v-divider> -->
         <!-- <h2 class="text-center title">Необходимые документы</h2> -->
         <!-- <v-divider></v-divider> -->
-        <h2 class="text-center title">Наши мастера {{amountSliderPages}} {{itemsPerSlide}}</h2>
+        <h2 class="text-center title">Наши мастера</h2>
         <v-container>
           <!-- <v-carousel cycle height="100%" hide-delimiter-background hide-delimiters>
             <v-carousel-item v-for="index in arr(amountSliderPages)" :key="index">
@@ -162,7 +164,7 @@
               <v-container fill-height>
                 <v-sheet align="center" class="mx-auto">
                   <p>
-                    Адрес ПОУ Каменская АШ ДОСААФ России:
+                    <v-icon>mdi-map-marker</v-icon>Адрес ПОУ Каменская АШ ДОСААФ России:
                   </p>
 
                   <p class="font-weight-bold">
@@ -170,15 +172,15 @@
                   </p>
 
                   <p>
-                    <span class="font-weight-bold">График работы:</span> понедельник - пятница, с 8:00 до 17:00
+                    <v-icon>mdi-clock-outline</v-icon> <span class="font-weight-bold">График работы:</span> понедельник - пятница, с 8:00 до 17:00
                   </p>
 
                   <p>
-                    <strong>Телефон:</strong> <a href="tel:+7(84156)5-19-61">+7(84156)5-19-61</a>; 5-17-04 
+                    <v-icon>mdi-phone</v-icon> <strong>Телефон:</strong> <a href="tel:+7(84156)5-19-61">+7(84156)5-19-61</a>; 5-17-04 
                   </p>
 
                   <p>
-                    <strong>Email:</strong> <a href="mailto:kamdosaaf58@mail.ru">kamdosaaf58@mail.ru</a>
+                    <v-icon>mdi-email</v-icon> <strong>Email:</strong> <a href="mailto:kamdosaaf58@mail.ru">kamdosaaf58@mail.ru</a>
                   </p>
                 </v-sheet>
               </v-container>

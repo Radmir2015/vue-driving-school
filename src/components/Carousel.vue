@@ -1,7 +1,7 @@
 <template>
-    <v-carousel cycle height="100%" hide-delimiter-background hide-delimiters>
+    <v-carousel :light="!$vuetify.theme.isDark" cycle height="100%" hide-delimiter-background hide-delimiters>
       <v-carousel-item v-for="index in arr(amountSliderPages)" :key="index">
-        <v-sheet light height="100%">
+        <v-sheet height="100%">
           <v-row justify="center" align="center" class="fill-height">
             <v-col v-bind="sliderItemsBreakpoints" v-for="ind in arr(Math.min(itemsPerSlide, items.length - index * itemsPerSlide))" :key="ind">
               <v-card class="text-center">

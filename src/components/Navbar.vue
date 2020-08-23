@@ -11,14 +11,32 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
+      <v-list dense rounded>
+        <v-list-item>
+      <v-switch
+        v-model="darkTheme"
+        @click="changeTheme"
+        color="success"
+        append-icon="mdi-brightness-6"
+        hide-details
+        class="ma-auto d-flex"
+      >
+        <template slot="label">
+          <span>Тёмная тема</span>
+        </template>
+      </v-switch>
+        </v-list-item>
+      </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar app color="green darken-2" dark>
+    <v-app-bar app color="green darken-2" dark src="https://images.wallpaperscraft.ru/image/kamufliazh_militari_uzory_128422_2400x2560.jpg">
         <!-- <v-container class="d-inline-flex align-baseline"> -->
         <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
         <!-- <v-toolbar-title class="d-inline-flex"> -->
         <v-container class="pa-0 px-5 text-truncate fitcontent">
+          <router-link to="/about" style="text-decoration: none; color: inherit">
             <span class="text-h5 font-weight-bold">ДОСААФ</span> <span class="text-h5 font-weight-light">Каменка</span>
+          </router-link>
         </v-container>
         <!-- </v-toolbar-title> -->
 
@@ -35,9 +53,9 @@
         <v-spacer></v-spacer>
         <v-container class="d-inline-flex fitcontent">
             <v-btn text class="hidden-sm-and-down" router to="/about">Автошкола</v-btn>
-            <v-btn text class="hidden-sm-and-down">Документы</v-btn>
+            <v-btn text class="hidden-sm-and-down" router to="/docs">Документы</v-btn>
         <!-- <v-spacer></v-spacer> -->
-            <v-btn text class="hidden-sm-and-down">Положения</v-btn>
+            <v-btn text class="hidden-sm-and-down" router to="/events">События</v-btn>
             <Dropdown header="Категории" :items="dropdownItems"/>
             <v-btn text class="hidden-xs-only">
                 Вход
@@ -45,6 +63,27 @@
             </v-btn>
         </v-container>
     </v-app-bar>
+    <v-snackbar
+      v-model="snackbar"
+      rounded
+      timeout="7000"
+      transition="slide-y-reverse-transition"
+    >
+      <p class="text-body-1 text-sm-h6 pa-0 ma-0 text-center font-weight-light">
+        {{ congratsMessage() }}
+      </p>
+
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          color="pink"
+          text
+          v-bind="attrs"
+          @click="snackbar = false"
+        >
+          Закрыть
+        </v-btn>
+      </template>
+    </v-snackbar>
 </nav>
 </template>
 
@@ -56,7 +95,10 @@ export default {
       Dropdown,
     },
     data: () => ({
+        foundationYear: 1955,
         drawer: false,
+        darkTheme: false,
+        snackbar: false,
         sideMenuItems: [
           { title: 'Home', icon: 'mdi-home', route: '/' },
           { title: 'Contact', icon: 'mdi-email', route: '/contact' },
@@ -67,7 +109,23 @@ export default {
             { title: 'Категория C', route: '/category#C' },
             { title: 'Категория BC', route: '/category#BC' },
         ]
-    })
+    }),
+    mounted() {
+      this.darkTheme = localStorage.getItem('theme') === 'dark'
+      this.snackbar = !!this.congratsMessage()
+    },
+    methods: {
+      changeTheme() {
+        this.$vuetify.theme.dark = !this.$vuetify.theme.dark
+        localStorage.setItem('theme', this.$vuetify.theme.dark ? 'dark' : 'light')
+      },
+      congratsMessage() {
+        const difference = new Date().getFullYear() - this.foundationYear
+        // this.snackbar = difference % 5 == 0
+        console.log(this.snackbar, difference % 5 == 0)
+        return (difference % 5 == 0) && `В этом году нашей автошколе исполняется ${difference} лет!`
+      }
+    },
 }
 </script>
 

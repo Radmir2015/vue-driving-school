@@ -3,10 +3,12 @@
     <Navbar/>
 
     <v-main>
-      <router-view></router-view>
+      <transition name="fade" mode="out-in">
+        <router-view></router-view>
+      </transition>
     </v-main>
 
-    <v-footer color="indigo" app>
+    <v-footer color="green darken-3" absolute>
 			<v-col class="text-center py-0" cols="12">
 				<span class="white--text">ДОСААФ &copy; {{ new Date().getFullYear() }}</span>
 			</v-col>
@@ -29,3 +31,12 @@ export default {
   })
 };
 </script>
+
+<style>
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .5s;
+  }
+  .fade-enter, .fade-leave-to {
+    opacity: 0;
+  }
+</style>

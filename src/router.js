@@ -20,6 +20,12 @@ export default new Router({
             // component: Home
             component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
         },
+        {
+            path: '/docs',
+            name: 'docs',
+            // component: Home
+            component: () => import(/* webpackChunkName: "docs" */ './views/Documents.vue')
+        },
     ],
     // scrollBehavior: function (to, from, savedPosition) {
     //     console.log(to)
