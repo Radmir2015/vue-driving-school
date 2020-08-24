@@ -17,12 +17,11 @@
         v-model="darkTheme"
         @click="changeTheme"
         color="success"
-        append-icon="mdi-brightness-6"
         hide-details
         class="ma-auto d-flex"
       >
         <template slot="label">
-          <span>Тёмная тема</span>
+          <span class="text-button">Тёмная тема</span>
         </template>
       </v-switch>
         </v-list-item>
@@ -57,15 +56,13 @@
         <!-- <v-spacer></v-spacer> -->
             <v-btn text class="hidden-sm-and-down" router to="/events">События</v-btn>
             <Dropdown header="Категории" :items="dropdownItems"/>
-            <v-btn text class="hidden-xs-only">
-                Вход
-                <v-icon right>mdi-login-variant</v-icon>
-            </v-btn>
+            <Login/>
         </v-container>
     </v-app-bar>
     <v-snackbar
       v-model="snackbar"
       rounded
+      :top="$vuetify.breakpoint.xs"
       timeout="7000"
       transition="slide-y-reverse-transition"
     >
@@ -89,10 +86,11 @@
 
 <script>
 import Dropdown from './Dropdown'
+import Login from './Login'
 
 export default {
     components: {
-      Dropdown,
+      Dropdown, Login
     },
     data: () => ({
         foundationYear: 1955,
@@ -100,8 +98,10 @@ export default {
         darkTheme: false,
         snackbar: false,
         sideMenuItems: [
-          { title: 'Home', icon: 'mdi-home', route: '/' },
-          { title: 'Contact', icon: 'mdi-email', route: '/contact' },
+          { title: 'Об автошколе', icon: 'mdi-domain', route: '/about' },
+          { title: 'Документы', icon: 'mdi-file', route: '/docs' },
+          { title: 'Мероприятия', icon: 'mdi-calendar-text', route: '/events' },
+          { title: 'Отзывы', icon: 'mdi-comment-quote-outline', route: '/reviews' },
         ],
         dropdownItems: [
             { title: 'Категория А', route: '/category#A' },
@@ -122,7 +122,7 @@ export default {
       congratsMessage() {
         const difference = new Date().getFullYear() - this.foundationYear
         // this.snackbar = difference % 5 == 0
-        console.log(this.snackbar, difference % 5 == 0)
+        // console.log(this.snackbar, difference % 5 == 0)
         return (difference % 5 == 0) && `В этом году нашей автошколе исполняется ${difference} лет!`
       }
     },

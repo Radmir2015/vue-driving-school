@@ -8,7 +8,7 @@
       </transition>
     </v-main>
 
-    <v-footer color="green darken-3" absolute>
+    <v-footer color="green darken-3" app absolute>
 			<v-col class="text-center py-0" cols="12">
 				<span class="white--text">ДОСААФ &copy; {{ new Date().getFullYear() }}</span>
 			</v-col>

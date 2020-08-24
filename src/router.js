@@ -23,8 +23,12 @@ export default new Router({
         {
             path: '/docs',
             name: 'docs',
-            // component: Home
             component: () => import(/* webpackChunkName: "docs" */ './views/Documents.vue')
+        },
+        {
+            path: '/events',
+            name: 'events',
+            component: () => import(/* webpackChunkName: "events" */ './views/Events.vue')
         },
     ],
     // scrollBehavior: function (to, from, savedPosition) {

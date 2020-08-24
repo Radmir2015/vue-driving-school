@@ -5,9 +5,9 @@
           <v-row justify="center" align="center" class="fill-height">
             <v-col v-bind="sliderItemsBreakpoints" v-for="ind in arr(Math.min(itemsPerSlide, items.length - index * itemsPerSlide))" :key="ind">
               <v-card class="text-center">
-                <v-img :src="items[index * itemsPerSlide + ind].photo" :aspect-ratio="aspectRatio||1"></v-img>
-                <v-card-title class="text-subtitle-1 font-weight-bold justify-center">{{ items[index * itemsPerSlide + ind].name }}</v-card-title>
-                <v-card-subtitle>{{ items[index * itemsPerSlide + ind].exp }}</v-card-subtitle>
+                <v-img :src="items[index * itemsPerSlide + ind].photo" :aspect-ratio="aspectRatio"></v-img>
+                <v-card-title v-if="items[index * itemsPerSlide + ind].name" class="text-subtitle-1 font-weight-bold justify-center">{{ items[index * itemsPerSlide + ind].name }}</v-card-title>
+                <v-card-subtitle v-if="items[index * itemsPerSlide + ind].exp">{{ items[index * itemsPerSlide + ind].exp }}</v-card-subtitle>
               </v-card>
             </v-col>
           </v-row>
