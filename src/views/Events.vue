@@ -5,8 +5,15 @@
                 <!-- <v-btn text block x-large color="info" class="mb-2" v-if="editMode" @click="$root.$emit('add-event')">Добавить<v-icon right>mdi-plus</v-icon></v-btn> -->
                 <!-- <EventDialog v-if="editMode" isAdd :event="$set(events, events.length, {})"/> -->
                 <!-- <EventDialog v-if="editMode" isAdd :event="events[events.length] = {}"/> -->
-                <EventDialog v-if="editMode" isAdd :events="events" />
-                <v-card class="pa-4 mb-2" v-for="(event, index) in events" :key="index">
+                <EventDialog v-if="editMode" @addEvent="(ev) => events.unshift(ev)">
+                    <template v-slot:default="slotProps">
+                    <v-btn text block x-large color="info" class="mb-2" @click="slotProps.openDialog">
+                      Добавить
+                      <v-icon right>mdi-plus</v-icon>
+                    </v-btn>
+                    </template>
+                </EventDialog>
+                <v-card class="pa-4 mb-2" v-for="(event, index) in events" :key="`${event.title}-${index}`">
                     <v-container class="d-flex pt-0" >
                         <p class="title pa-0 ma-0 align-self-center">{{ event.title.repeat(5) }}</p>
                         <v-spacer></v-spacer>
@@ -16,13 +23,13 @@
                             <v-icon>mdi-pencil-outline</v-icon>
                         </v-btn> -->
 
-                        <EventDialog v-if="editMode" :events="events" :event="event" />
-                            <!-- <template v-slot:btn="{ dialog }">
-                                <v-btn icon @click="dialog = true">
+                        <EventDialog v-if="editMode" :eventRef="event" @removeEvent="$delete(events, index)">
+                            <template v-slot:default="slotProps">
+                                <v-btn icon @click="slotProps.openDialog">
                                   <v-icon>mdi-pencil-outline</v-icon>
                                 </v-btn>
                             </template>
-                        </EventDialog> -->
+                        </EventDialog>
                     </v-container>
                     
 
@@ -50,12 +57,13 @@ export default {
         editMode: false,
         events: [
             { title: 'Hello world', published: new Date(), body: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. At alias repellat voluptate tempore impedit numquam sint similique obcaecati inventore pariatur. Facilis ut, \nofficiis eum laborum dicta excepturi illum quaerat! Numquam dolore sequi voluptas, harum molestias \naccusamus incidunt culpa tempore dolor modi explicabo saepe delectus nulla necessitatibus illo distinctio officia reprehenderit.', images: [ { photo: 'https://picsum.photos/800/498?random'}, { photo: 'https://picsum.photos/800/300?random' } ] },
-            { title: 'Hello world', published: new Date(), body: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. At alias repellat voluptate tempore impedit numquam sint similique obcaecati inventore pariatur. Facilis ut, officiis eum laborum dicta excepturi illum quaerat! Numquam dolore sequi voluptas, harum molestias accusamus incidunt culpa tempore dolor modi explicabo saepe delectus nulla necessitatibus illo distinctio officia reprehenderit.', images: [ { photo: 'https://picsum.photos/800/498?random'} ] },
-            { title: 'Hello world', published: new Date(), body: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. At alias repellat voluptate tempore impedit numquam sint similique obcaecati inventore pariatur. Facilis ut, officiis eum laborum dicta excepturi illum quaerat! Numquam dolore sequi voluptas, harum molestias accusamus incidunt culpa tempore dolor modi explicabo saepe delectus nulla necessitatibus illo distinctio officia reprehenderit.', images: [] },
-            { title: 'Hello world', published: new Date(), body: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. At alias repellat voluptate tempore impedit numquam sint similique obcaecati inventore pariatur. Facilis ut, officiis eum laborum dicta excepturi illum quaerat! Numquam dolore sequi voluptas, harum molestias accusamus incidunt culpa tempore dolor modi explicabo saepe delectus nulla necessitatibus illo distinctio officia reprehenderit.' },
+            // { title: 'Hello world', published: new Date(), body: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. At alias repellat voluptate tempore impedit numquam sint similique obcaecati inventore pariatur. Facilis ut, officiis eum laborum dicta excepturi illum quaerat! Numquam dolore sequi voluptas, harum molestias accusamus incidunt culpa tempore dolor modi explicabo saepe delectus nulla necessitatibus illo distinctio officia reprehenderit.', images: [ { photo: 'https://picsum.photos/800/498?random'} ] },
+            // { title: 'Hello world', published: new Date(), body: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. At alias repellat voluptate tempore impedit numquam sint similique obcaecati inventore pariatur. Facilis ut, officiis eum laborum dicta excepturi illum quaerat! Numquam dolore sequi voluptas, harum molestias accusamus incidunt culpa tempore dolor modi explicabo saepe delectus nulla necessitatibus illo distinctio officia reprehenderit.', images: [] },
+            // { title: 'Hello world', published: new Date(), body: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. At alias repellat voluptate tempore impedit numquam sint similique obcaecati inventore pariatur. Facilis ut, officiis eum laborum dicta excepturi illum quaerat! Numquam dolore sequi voluptas, harum molestias accusamus incidunt culpa tempore dolor modi explicabo saepe delectus nulla necessitatibus illo distinctio officia reprehenderit.' },
         ]
     }),
     async created() {
+        this.$root.$emit('request-sign-status')
         // db.collection('events').onSnapshot(res => {
         //     const changes = res.docChanges()
 

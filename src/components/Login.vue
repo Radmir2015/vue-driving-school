@@ -113,6 +113,10 @@ export default {
               this.buttonName = 'Вход'
           }
       })
+      
+      this.$root.$on('request-sign-status', () => {
+          this.$root.$emit(this.signedIn ? 'sign-in' : 'sign-out')
+      })
   },
 //   created() {
 //     //   window.addEventListener('unload', alert('unload'))
