@@ -148,7 +148,7 @@
               </v-sheet>
             </v-carousel-item>
           </v-carousel> -->
-          <Carousel :items="masters" :sliderItemsBreakpoints="sliderItemsBreakpoints"></Carousel>
+          <CarouselOrItem :items="masters" :sliderItemsBreakpoints="sliderItemsBreakpoints" :aspectRatio="1"></CarouselOrItem>
         </v-container>
         <v-divider></v-divider>
         <h2 class="text-center title">Контакты</h2>
@@ -199,13 +199,13 @@
 </template>
 
 <script>
-import Carousel from '../components/Carousel';
+// import Carousel from '../components/Carousel';
 import CarouselOrItem from '../components/CarouselOrItem';
 
 export default {
     name: 'About',
     components: {
-      Carousel, CarouselOrItem
+      CarouselOrItem
     },
     computed: {
       itemsPerSlide() {
