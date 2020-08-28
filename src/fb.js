@@ -21,9 +21,10 @@ firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 
 const db = firebase.firestore();
-const storage = firebase.storage().ref();
+const storage = firebase.storage();
+const storageRef = storage.ref();
 const auth = firebase.auth();
 
 // db.settings({ timestampsInSnapshots: true });
 
-export { db, storage, auth };
+export { db, storage, storageRef, auth };

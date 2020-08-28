@@ -15,7 +15,7 @@
                 </EventDialog>
                 <v-card class="pa-4 mb-2" v-for="(event, index) in events" :key="`${event.title}-${index}`">
                     <v-container class="d-flex pt-0" >
-                        <p class="title pa-0 ma-0 align-self-center">{{ event.title.repeat(5) }}</p>
+                        <p class="title pa-0 ma-0 align-self-center">{{ event.title }}</p>
                         <v-spacer></v-spacer>
                         <v-icon left>mdi-clock</v-icon>
                         <p class="text-body-1 pa-0 ma-0 align-self-center" >{{ event.published.toLocaleString() }}</p>
@@ -23,9 +23,9 @@
                             <v-icon>mdi-pencil-outline</v-icon>
                         </v-btn> -->
 
-                        <EventDialog v-if="editMode" :eventRef="event" @removeEvent="$delete(events, index)">
+                        <EventDialog class="d-flex" v-if="editMode" :eventRef="event" @removeEvent="$delete(events, index)" @updateEvent="(ev) => $set(events, index, ev)">
                             <template v-slot:default="slotProps">
-                                <v-btn icon @click="slotProps.openDialog">
+                                <v-btn icon class="align-self-center" @click="slotProps.openDialog">
                                   <v-icon>mdi-pencil-outline</v-icon>
                                 </v-btn>
                             </template>
@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import { db, storage } from '@/fb'
+import { db, storageRef } from '@/fb'
 import CarouselOrItem from '../components/CarouselOrItem'
 import EventDialog from '../components/EventDialog'
 
@@ -64,6 +64,7 @@ export default {
     }),
     async created() {
         this.$root.$emit('request-sign-status')
+
         // db.collection('events').onSnapshot(res => {
         //     const changes = res.docChanges()
 
@@ -76,7 +77,7 @@ export default {
         //     })
         // })
 
-        const url = await storage.child('images/events/afdgdnsgxn651.jpg').getDownloadURL()
+        const url = await storageRef.child('images/events/afdgdnsgxn651.jpg').getDownloadURL()
 
         console.log('url', url)
 
@@ -91,6 +92,8 @@ export default {
         })
     },
     mounted() {
+        this.$root.$emit('request-sign-status')
+        
         this.$root.$on('sign-in', () => {
             this.editMode = true
         })

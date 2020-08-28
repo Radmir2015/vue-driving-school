@@ -6,10 +6,10 @@
             <v-card-title v-if="items[0].name" class="text-subtitle-1 font-weight-bold justify-center">{{ items[0].name }}</v-card-title>
             <v-card-subtitle v-if="items[0].exp">{{ items[0].exp }}</v-card-subtitle>
         </v-card>
-        <v-skeleton-loader v-else-if="items && items.length == 0"
+        <!-- <v-skeleton-loader v-else-if="items && items.length == 0"
           class="mx-auto"
           type="card"
-        ></v-skeleton-loader>
+        ></v-skeleton-loader> -->
     </v-container>
 </template>
 

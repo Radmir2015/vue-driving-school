@@ -25,7 +25,43 @@
               label="Основной текст"
               prepend-icon="mdi-card-text-outline"
             />
-            <v-file-input counter chips multiple accept="image/*" label="Добавить фото" />
+            <v-container v-if="event.images && event.images.length > 0" fluid class="pa-0">
+                <p class="text-body-1 mb-0"><v-icon left>mdi-image-multiple</v-icon>Добавленные фото</p>
+                <v-container fluid class="pb-0">
+                    <v-item-group
+                      v-model="photosToDelete"
+                      multiple
+                    >
+                    <!-- <v-row> -->
+                        <!-- <v-col :cols="Math.max(3, 12 / event.images.length)" v-for="(image, index) in event.images" :key="index" class="d-flex">
+                            <v-img :src="image.photo" class="align-self-center"></v-img>
+                        </v-col> -->
+                        <draggable class="row" v-model="event.images" @start="drag = true" @end="drag = false">
+                            <v-col cols="12" :sm="Math.max(3, 12 / event.images.length)" v-for="(image) in event.images" :key="`${image.photo}-${image.id}`" class="d-flex">
+                            <v-item v-slot:default="{ active, toggle }" :value="image.id">
+                                <v-img :src="image.photo" class="text-right pa-2">
+                                    <v-btn fab small @click="toggle">
+                                        <v-icon large>{{ active ? 'mdi-close-circle' : 'mdi-close-circle-outline' }}</v-icon>
+                                    </v-btn>
+                                <v-overlay :absolute="true" :value="active" opacity="0.7">
+                                    <p class="text-center">Фото будет удалено</p>
+                                    <v-btn text @click="toggle" color="success">
+                                        <v-icon left>mdi-file-restore</v-icon>Отменить<v-icon right>mdi-file-restore</v-icon>
+                                    </v-btn>
+                                </v-overlay>
+                                </v-img>
+                            </v-item>
+                            </v-col>
+                        </draggable>
+                    <!-- </v-row> -->
+                    </v-item-group>
+                </v-container>
+            </v-container>
+            <v-file-input v-model="files" counter chips multiple accept="image/*" label="Добавить фото">
+                <template v-slot:selection="{ text, index }">
+                    <v-chip small label close @click:close="$delete(files, index)">{{ text }}</v-chip>
+                </template>
+            </v-file-input>
           </v-form>
         </v-card-text>
         <v-divider></v-divider>
@@ -68,7 +104,8 @@
 </template>
 
 <script>
-import { db } from "@/fb";
+import { db, storage, storageRef } from "@/fb"
+import draggable from 'vuedraggable'
 
 export default {
   props: {
@@ -80,10 +117,13 @@ export default {
     //     published: new Date(),
     //   })
     },
-    isAdd: {
+    withoutDataBind: {
       type: Boolean,
       default: false
     }
+  },
+  components: {
+      draggable
   },
   data: () => ({
     dialog: false,
@@ -93,17 +133,37 @@ export default {
       deleteButton: false,
     },
     event: null,
+    photosToDelete: [],
+    drag: false,
+    files: [],
   }),
+  watch: {
+      files: function() {
+          this.filesChanged()
+      },
+      photosToDelete: function() {
+          console.log(this.photosToDelete)
+        //   console.log(this.event.images)
+      }
+  },
   methods: {
     async submit() {
         this.loading.saveButton = true
         // console.log(this.event)
         if (this.event.id) {
+            
+            await this.filterImagesAndUpload()
+
             const { id, ...eventWithoutId } = this.event
 
             await db.collection('events').doc(id).update(eventWithoutId)
                 // .then(() => {
             console.log(`Updated doc with id ${id}!`)
+
+            if (this.withoutDataBind) {
+                this.$emit('updateEvent', this.eventDataCopy(this.event))
+                // this.$emit('updateEvent', this.withoutDataBind ? this.eventDataCopy(this.event) : this.event)
+            }
 
             this.loading.saveButton = false
             this.dialog = false
@@ -113,6 +173,9 @@ export default {
             //     ...this.event,
             //     published: new Date()
             // }
+
+            await this.filterImagesAndUpload()
+
             this.event.published = new Date()
             this.event.id = (await db.collection('events').add(this.event)).id
 
@@ -125,7 +188,8 @@ export default {
             // if (this.events) {
             //     this.events.unshift({ id: this.event.id, ...eventWithDate })
             // }
-            this.$emit('addEvent', this.event)
+            
+            this.$emit('addEvent', this.withoutDataBind ? this.eventDataCopy(this.event) : this.event)
 
             // delete this.event.id
             // this.event.title = ''
@@ -135,11 +199,18 @@ export default {
                 this.event = this.defaultData()
             }
         }
+        this.files = []
     },
     async deleteEvent() {
         this.loading.deleteButton = true
 
         if (this.event.id) {
+            this.event.images.map(img => {
+                storage.refFromURL(img.photo).delete()
+                    .then(() => console.log('Successfully deleted file'))
+                    .catch((err) => console.error(err))
+            })
+
             await db.collection('events').doc(this.event.id).delete()
 
             // this.$delete(this.events, this.events.findIndex(x => x.id === this.event.id))
@@ -157,19 +228,123 @@ export default {
         this.loading.deleteButton = false
         this.dialog = false
     },
+    async filterImagesAndUpload() {
+        this.event.images.filter(img => !img.file && this.photosToDelete.includes(img.id)).map(img => {
+            storage.refFromURL(img.photo).delete()
+                .then(() => console.log('Successfully deleted file'))
+                .catch((err) => console.error(err))
+        })
+
+        this.event.images = this.event.images.filter(img => !this.photosToDelete.includes(img.id))
+
+        console.log('delete selected photo', this.event.images)
+
+        this.event.images = await Promise.all(this.event.images.map(async img => ({ ...img, photo: img.file ? await this.uploadFile(img.file) : img.photo })))
+
+        console.log('uploaded photos', this.event.images)
+
+        // this.event.images = this.event.images.map(({ id: imgId, file, ...img }) => ({ ...img }))
+        this.event.images = this.event.images.map(img => { delete img.id; delete img.file; return img })
+
+        console.log('deleted extra info', this.event.images)
+    },
+    async uploadFile(file) {
+        return new Promise((resolve, reject) => {
+            // Upload file and metadata to the object 'images/mountains.jpg'
+            let uploadTask = storageRef.child('images/events/' + file.name).put(file);
+    
+            // Listen for state changes, errors, and completion of the upload.
+            uploadTask.on('state_changed',
+              function(snapshot) {
+                // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+                let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                console.log('Upload is ' + progress + '% done');
+                switch (snapshot.state) {
+                  case 'paused':
+                    console.log('Upload is paused');
+                    break;
+                  case 'running':
+                    console.log('Upload is running');
+                    break;
+                }
+              }, function(error) {
+                reject(error.code)
+            }, function() {
+              // Upload completed successfully, now we can get the download URL
+              uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+                console.log('File available at', downloadURL);
+                resolve(downloadURL)
+              });
+            });
+        })
+    },
+    filesChanged() {
+        // this.files = event.map(file => ({ photo: (window.URL || window.webkitURL).createObjectURL(file), type: 'fromFile' }))
+
+        // console.log(this.files)
+        if (!this.event.images) {
+            // this.event.images = []
+            this.$set(this.event, 'images', [])
+        }
+
+        this.event.images = [
+            ...this.event.images.filter(x => !x.file),
+            ...this.files.map(file =>
+                ({ photo: (window.URL || window.webkitURL).createObjectURL(file), file })
+                )
+            ]
+        // this.event.images = [
+        //     ...this.event.images.filter(x => !x.type || x.type !== 'fromFile'),
+        //     ...this.files.map(file =>
+        //         ({ photo: (window.URL || window.webkitURL).createObjectURL(file), type: 'fromFile', file })
+        //         )
+        //     ]
+
+        this.event.images = this.event.images.map((img, ind) => ({ ...img, id: ind }))
+
+        console.log(this.photosToDelete)
+        // this.event.images = [ ...this.event.images, ...this.files.map(file => ({ photo: (window.URL || window.webkitURL).createObjectURL(file) })) ]
+        // this.event.images.push(...this.files.map(file => ({ photo: (window.URL || window.webkitURL).createObjectURL(file) })))
+    },
     defaultData() {
         return {
             title: "",
             body: "",
             published: new Date(),
         }
+    },
+    eventDataCopy(eventRef) {
+        if (eventRef) {
+            const eventRefCopy = JSON.parse(JSON.stringify(eventRef))
+            eventRefCopy.published = new Date(eventRefCopy.published)
+
+            return eventRefCopy
+        } else {
+            return null
+        } // or in one line: return eventRef && eventRefCopy
+
     }
   },
   created() {
     // this.$root.$on("add-event", () => {
     //   this.dialog = true;
     // });
-    this.event = this.eventRef || this.defaultData()
+
+    // let eventRefCopy = null
+    // if (this.eventRef) {
+    //     eventRefCopy = JSON.parse(JSON.stringify(this.eventRef))
+    //     eventRefCopy.published = new Date(eventRefCopy.published)
+
+    //     console.log(eventRefCopy)
+    // }
+
+    this.event = (this.withoutDataBind ? this.eventDataCopy(this.eventRef) : this.eventRef) || this.defaultData()
+
+    if (this.event.images) {
+        this.event.images = this.event.images.map((img, ind) => ({ ...img, id: ind }))
+    }
+    // if (this.event.images)
+    //     this.event.images = [ ...this.event.images, ...this.files.map(file => ({ photo: (window.URL || window.webkitURL).createObjectURL(file) })) ]
   }
 };
 </script>
