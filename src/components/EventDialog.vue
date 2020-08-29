@@ -229,6 +229,8 @@ export default {
         this.dialog = false
     },
     async filterImagesAndUpload() {
+        if (!this.event.images) return
+
         this.event.images.filter(img => !img.file && this.photosToDelete.includes(img.id)).map(img => {
             storage.refFromURL(img.photo).delete()
                 .then(() => console.log('Successfully deleted file'))
