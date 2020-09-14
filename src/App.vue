@@ -17,7 +17,8 @@
 </template>
 
 <script>
-import Navbar from "./components/Navbar";
+import Navbar from "./components/Navbar"
+import { mapActions } from 'vuex'
 
 export default {
   name: "App",
@@ -28,7 +29,13 @@ export default {
 
   data: () => ({
     
-  })
+  }),
+  methods: {
+    ...mapActions(['GET_DOCS'])
+  },
+  mounted() {
+    this.GET_DOCS()
+  }
 };
 </script>
 

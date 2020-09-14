@@ -1,7 +1,7 @@
 <template>
-  <v-dialog max-width="400px" v-model="dialog" :disabled="signedIn">
+  <v-dialog max-width="400px" v-model="dialog" :disabled="LOGIN_STATE">
     <template v-slot:activator="{ on, attrs }">
-      <v-btn text class="hidden-xs-only" v-bind="attrs" v-on="on" @click="checkedSignOut" :loading="loading.signOutButton">
+      <v-btn text :class="{ 'hidden-xs-only': hiddenOnMobile }" v-bind="attrs" v-on="on" @click="checkedSignOut" :loading="loading.signOutButton">
         {{ buttonName }}
         <v-icon right>mdi-login-variant</v-icon>
       </v-btn>
@@ -37,11 +37,13 @@
 
 <script>
 import { auth } from '@/fb'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  props: ['hiddenOnMobile'],
   data: () => ({
     dialog: false,
-    signedIn: false,
+    // signedIn: false,
     buttonName: "Вход",
     loading: {
         submitButton: false,
@@ -60,7 +62,11 @@ export default {
       v => v.length >= 3 || "Минимальная длина данного поля - 3 символа"
     ]
   }),
+  computed: {
+    ...mapGetters(['LOGIN_STATE'])
+  },
   methods: {
+    ...mapActions(['TOGGLE_LOGIN']),
     submit() {
         this.loading.submitButton = true
         this.toggleSignIn(this.login.value, this.password.value)
@@ -96,7 +102,7 @@ export default {
         }
     },
     checkedSignOut() {
-        if (this.signedIn) {
+        if (this.LOGIN_STATE) {
             this.loading.signOutButton = true
             this.toggleSignIn()
         }
@@ -104,19 +110,21 @@ export default {
   },
   mounted() {
       auth.onAuthStateChanged(user => {
-          this.signedIn = !!user && !user.isAnonymous
-          if (user && !user.isAnonymous) {
+          this.TOGGLE_LOGIN(!!user && !user.isAnonymous)
+          if (this.LOGIN_STATE) {
               this.buttonName = 'Выход'
-              this.$root.$emit('sign-in')
+              // this.$root.$emit('sign-in')
+              this.TOGGLE_LOGIN(true)
           } else {
-              this.$root.$emit('sign-out')
+            // this.$root.$emit('sign-out')
               this.buttonName = 'Вход'
+              this.TOGGLE_LOGIN(false)
           }
       })
       
-      this.$root.$on('request-sign-status', () => {
-          this.$root.$emit(this.signedIn ? 'sign-in' : 'sign-out')
-      })
+      // this.$root.$on('request-sign-status', () => {
+      //     this.$root.$emit(this.signedIn ? 'sign-in' : 'sign-out')
+      // })
   },
 //   created() {
 //     //   window.addEventListener('unload', alert('unload'))

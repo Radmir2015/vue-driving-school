@@ -5,8 +5,8 @@
           <v-row justify="center" align="center" class="fill-height">
             <v-col v-bind="sliderItemsBreakpoints" v-for="ind in arr(Math.min(itemsPerSlide, items.length - index * itemsPerSlide))" :key="ind">
               <v-card class="text-center">
-                <v-img :src="items[index * itemsPerSlide + ind].photo" :aspect-ratio="aspectRatio"></v-img>
-                <v-card-title v-if="items[index * itemsPerSlide + ind].name" class="text-subtitle-1 font-weight-bold justify-center">{{ items[index * itemsPerSlide + ind].name }}</v-card-title>
+                <v-img :src="items[index * itemsPerSlide + ind].photo" :aspect-ratio="aspectRatio" :style="avatar ? imageStyle : ''" :contain="avatar"></v-img>
+                <v-card-title v-if="items[index * itemsPerSlide + ind].name" class="text-subtitle-1 font-weight-bold justify-center text-truncate">{{ items[index * itemsPerSlide + ind].name }}</v-card-title>
                 <v-card-subtitle v-if="items[index * itemsPerSlide + ind].exp">{{ items[index * itemsPerSlide + ind].exp }}</v-card-subtitle>
               </v-card>
             </v-col>
@@ -18,7 +18,7 @@
 
 <script>
 export default {
-    props: ['items', 'sliderItemsBreakpoints', 'aspectRatio'],
+    props: ['items', 'sliderItemsBreakpoints', 'aspectRatio', 'avatar', 'imageStyle'],
     computed: {
       itemsPerSlide() {
         const breakpoint = {"xs": "cols"}[this.$vuetify.breakpoint.name]||this.$vuetify.breakpoint.name

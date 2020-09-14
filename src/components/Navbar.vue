@@ -2,6 +2,11 @@
 <nav>
     <v-navigation-drawer v-model="drawer" app>
       <v-list dense rounded>
+      <v-row class="text-center">
+        <v-col>
+          <Login/>
+        </v-col>
+      </v-row>
         <v-list-item v-for="sideMenuItem in sideMenuItems" :key="sideMenuItem.title" router :to="sideMenuItem.route">
           <v-list-item-action>
             <v-icon>{{ sideMenuItem.icon }}</v-icon>
@@ -28,7 +33,7 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar app color="green darken-2" dark src="https://images.wallpaperscraft.ru/image/kamufliazh_militari_uzory_128422_2400x2560.jpg">
+    <v-app-bar app color="green darken-2" dark :src="require('@/assets/header-background.jpg')">
         <!-- <v-container class="d-inline-flex align-baseline"> -->
         <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
         <!-- <v-toolbar-title class="d-inline-flex"> -->
@@ -56,7 +61,7 @@
         <!-- <v-spacer></v-spacer> -->
             <v-btn text class="hidden-sm-and-down" router to="/events">События</v-btn>
             <Dropdown header="Категории" :items="dropdownItems"/>
-            <Login/>
+            <Login :hiddenOnMobile="true"/>
         </v-container>
     </v-app-bar>
     <v-snackbar
@@ -102,12 +107,17 @@ export default {
           { title: 'Документы', icon: 'mdi-file', route: '/docs' },
           { title: 'Мероприятия', icon: 'mdi-calendar-text', route: '/events' },
           { title: 'Отзывы', icon: 'mdi-comment-quote-outline', route: '/reviews' },
+          { title: 'Образоват. программы', icon: 'mdi-bag-personal-outline', route: '/docs#course' },
+          { title: 'Платные услуги', icon: 'mdi-toolbox-outline', route: '/docs#paid-service' },
+          { title: 'Положения', icon: 'mdi-text-box', route: '/docs#regulations' },
+          { title: 'Локальные документы', icon: 'mdi-file-document-outline', route: '/docs#local' },
         ],
         dropdownItems: [
-            { title: 'Категория А', route: '/category#A' },
-            { title: 'Категория B', route: '/category#B' },
-            { title: 'Категория C', route: '/category#C' },
-            { title: 'Категория BC', route: '/category#BC' },
+            { title: 'Категория А', route: '/about#category-A' },
+            { title: 'Категория B', route: '/about#category-B' },
+            { title: 'Категория C', route: '/about#category-C' },
+            { title: 'Категория D', route: '/about#category-D' },
+            { title: 'Категория E', route: '/about#category-E' },
         ]
     }),
     mounted() {

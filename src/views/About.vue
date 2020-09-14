@@ -4,7 +4,23 @@
         <!-- <h2 class="text-center title">Обучение вождению в г. Каменка</h2> -->
         <p class="text-center text-h6 font-weight-regular pa-3 hidden-xs-only ma-0">Профессиональное образовательное учреждение <span class="font-weight-bold">Каменская автомобильная школа</span> Общероссийской общественно-государственной организации <span class="font-weight-bold">Добровольное общество содействие армии, авиации и флоту России</span></p>
         <p class="text-center text-h6 font-weight-bold pa-2 hidden-sm-and-up ma-0">ПОУ Каменская АШ ДОСААФ</p>
-        <v-parallax height="300" src="https://image.jimcdn.com/app/cms/image/transf/none/path/sc527a65ee2249ab4/image/icc25d6c57e1eba36/version/1391481017/image.jpg"></v-parallax>
+        <v-row class="px-6">
+          <v-col sm="8" offset-sm="2" style="text-indent: 2em" class="text-justify">
+            <p>
+              <strong>Учредителем ПОУ Каменской АШ</strong> является Общероссийская общественно-государственная организация "Добровольное Общество содействия армии, авиации и флоту России" (ДОСААФ РОССИИ).
+            </p>
+
+            <p>
+              <strong>Права юридического лица</strong> от имени ДОСААФ РОССИИ осуществляет Центральный совет ДОСААФ РОССИИ - постоянно действующий руководящий орган ДОСААФ РОССИИ.
+            </p>
+
+            <p class="mb-0">
+              <strong>Место нахождения Учредителя</strong>:
+              Москва, Волоколамское шоссе, д. 88, стр. 3
+            </p>
+          </v-col>
+        </v-row>
+        <v-parallax height="300" :src="require('@/assets/car-B-3.jpg')"></v-parallax>
       </v-card>
       <v-card class="my-2">
         <!-- <h3 class="text-center title">Пару слов об автошколе + карта</h3> -->
@@ -82,8 +98,8 @@
                 hide-default-footer
                 disable-sort
               >
-                <template #item.cars="{  }">
-                    <v-btn fab text @click="$vuetify.goTo('.v-tabs')">
+                <template #item.cars="{ item }">
+                    <v-btn fab text @click="$vuetify.goTo('.v-tabs'); tab = item.cars">
                       <v-icon>mdi-eye-outline</v-icon>
                     </v-btn>
                     <!-- <router-link to="/fuck">Посмотреть</router-link> -->
@@ -101,7 +117,7 @@
           <v-tab>Категория E<v-icon>mdi-truck-trailer</v-icon></v-tab>
         </v-tabs>
         <v-tabs-items v-model="tab">
-          <v-tab-item v-for="index in 5" :key="index">
+          <v-tab-item v-for="(tabContent, index) in tabsContent" :key="index">
             <v-card flat>
               <v-row class="text-center" no-gutters>
                 <v-col cols="12" sm="6" class="pa-2">
@@ -112,7 +128,7 @@
                       <!-- <Carousel :items="masters" :sliderItemsBreakpoints="{cols: 12}" aspectRatio="2.5"></Carousel> -->
                       <!-- <CarouselOrItem v-if="1" :items="[]" :sliderItemsBreakpoints="{cols: 12}" aspectRatio="2"></CarouselOrItem> -->
                       <!-- <CarouselOrItem v-if="1" :items="masters.slice(0, 1)" :sliderItemsBreakpoints="{cols: 12}" aspectRatio="2"></CarouselOrItem> -->
-                      <CarouselOrItem :items="masters" :sliderItemsBreakpoints="{cols: 12}" aspectRatio="2"></CarouselOrItem>
+                      <CarouselOrItem :items="tabContent.cars" :sliderItemsBreakpoints="{cols: 12}" aspectRatio="2"></CarouselOrItem>
                     </v-container>
                   <!-- </v-card> -->
                 </v-col>
@@ -120,7 +136,7 @@
                   <v-container class="py-0">
                     <h3>Площадка</h3>
                     <!-- <v-img src="https://picsum.photos/400/200?random"></v-img> -->
-                    <CarouselOrItem :items="masters.slice(0, 1)" :sliderItemsBreakpoints="{cols: 12}" aspectRatio="2"></CarouselOrItem>
+                    <CarouselOrItem :items="tabContent.platform" :sliderItemsBreakpoints="{cols: 12}" aspectRatio="2"></CarouselOrItem>
                   </v-container>
                 </v-col>
               </v-row>
@@ -148,7 +164,7 @@
               </v-sheet>
             </v-carousel-item>
           </v-carousel> -->
-          <CarouselOrItem :items="masters" :sliderItemsBreakpoints="sliderItemsBreakpoints" :aspectRatio="1"></CarouselOrItem>
+          <CarouselOrItem :items="masters" :sliderItemsBreakpoints="sliderItemsBreakpoints" :aspectRatio="1" imageStyle="max-height: 250px" :avatar="true"></CarouselOrItem>
         </v-container>
         <v-divider></v-divider>
         <h2 class="text-center title">Контакты</h2>
@@ -207,6 +223,17 @@ export default {
     components: {
       CarouselOrItem
     },
+    beforeRouteEnter(to, from, next) {
+      if (to.hash) {
+        next(vm => {
+          if (to.hash.slice(1).split('-').shift() == 'category') {
+            vm.tab = ['A', 'B', 'C', 'D', 'E'].indexOf(to.hash.slice(1).split('-').pop())
+            vm.$vuetify.goTo('.v-tabs')
+          }
+          // vm.expandedPanels[vm.ACTIVE_DOC_INDEX] = 0
+        })
+      } else next()
+    },
     computed: {
       itemsPerSlide() {
         console.log(this.arr(5))
@@ -225,60 +252,90 @@ export default {
       tab: 1,
       masters: [
         {
-          name: "Александров Сергей Петрович",
-          exp: "Стаж вождения 100 лет",
-          photo: "https://picsum.photos/400/200?random"
+          name: "Шиманский Александр Богданович",
+          exp: `Cтаж работы в автошколе ${new Date().getFullYear() - 1995} лет`,
+          photo: require('@/assets/userImage.png')
         },
         {
-          name: "Александров Сергей Петрович",
-          exp: "Стаж вождения 100 лет",
-          photo: "https://picsum.photos/400/200?random"
+          name: "Волков Виктор Иванович",
+          exp: `Cтаж работы в автошколе ${new Date().getFullYear() - 2003} лет`,
+          photo: require('@/assets/userImage.png')
         },
         {
-          name: "Александров Сергей Петрович",
-          exp: "Стаж вождения 100 лет",
-          photo: "https://picsum.photos/400/200?random"
+          name: "Афонькин Юрий Леонидович",
+          exp: `Cтаж работы в автошколе ${new Date().getFullYear() - 2002} лет`,
+          photo: require('@/assets/userImage.png')
         },
         {
-          name: "Александров Сергей Петрович",
-          exp: "Стаж вождения 100 лет",
-          photo: "https://picsum.photos/400/200?random"
+          name: "Панькин Владимир Александрович",
+          exp: `Cтаж работы в автошколе ${new Date().getFullYear() - 1980} лет`,
+          photo: require('@/assets/userImage.png')
         },
         {
-          name: "Александров Сергей Петрович",
-          exp: "Стаж вождения 100 лет",
-          photo: "https://picsum.photos/400/200?random"
+          name: "Серов Николай Николаевич",
+          exp: `Cтаж работы в автошколе ${new Date().getFullYear() - 2005} лет`,
+          photo: require('@/assets/userImage.png')
         },
         {
-          name: "Александров Сергей Петрович",
-          exp: "Стаж вождения 100 лет",
-          photo: "https://picsum.photos/400/200?random"
+          name: "Корытцев Александр Васильевич",
+          exp: `Cтаж работы в автошколе ${new Date().getFullYear() - 2007} лет`,
+          photo: require('@/assets/userImage.png')
         },
         {
-          name: "Александров Сергей Петрович",
-          exp: "Стаж вождения 100 лет",
-          photo: "https://picsum.photos/400/200?random"
+          name: "Мерекин Роман Сергеевич",
+          exp: `Cтаж работы в автошколе ${new Date().getFullYear() - 2009} лет`,
+          photo: require('@/assets/userImage.png')
         },
         {
-          name: "Александров Сергей Петрович",
-          exp: "Стаж вождения 100 лет",
-          photo: "https://picsum.photos/400/200?random"
+          name: "Кондрахин Олег Владимирович",
+          exp: `Cтаж работы в автошколе ${new Date().getFullYear() - 2010} лет`,
+          photo: require('@/assets/userImage.png')
         },
         {
-          name: "Александров Сергей Петрович",
-          exp: "Стаж вождения 100 лет",
-          photo: "https://picsum.photos/400/200?random"
+          name: "Мезенцев Михаил Юрьевич",
+          exp: `Cтаж работы в автошколе ${new Date().getFullYear() - 2010} лет`,
+          photo: require('@/assets/userImage.png')
         },
-        {
-          name: "Александров Сергей Петрович",
-          exp: "Стаж вождения 100 лет",
-          photo: "https://picsum.photos/400/200?random"
-        },
-        {
-          name: "Александров Сергей Петрович",
-          exp: "Стаж вождения 100 лет",
-          photo: "https://picsum.photos/400/200?random"
-        },
+      ],
+      tabsContent: [
+        { category: 'A', cars: [
+            { photo: require('@/assets/car-A.jpg') },
+            { photo: require('@/assets/car-A-1.jpg') },
+          ], platform: [
+            { photo: require('@/assets/platform-A.jpg') },
+          ] },
+        { category: 'B', cars: [
+            { photo: require('@/assets/car-B.jpg') },
+            { photo: require('@/assets/car-B-1.jpg') },
+            { photo: require('@/assets/car-B-2.jpg') },
+            { photo: require('@/assets/car-B-3.jpg') },
+          ], platform: [
+            { photo: require('@/assets/platform-B.jpg') },
+            { photo: require('@/assets/platform-B-1.jpg') },
+            { photo: require('@/assets/platform-B-2.jpg') },
+            { photo: require('@/assets/platform-B-3.jpg') },
+          ] },
+        { category: 'C', cars: [
+            { photo: require('@/assets/car-C.jpg') },
+            { photo: require('@/assets/car-C-1.jpg') },
+            { photo: require('@/assets/car-C-2.jpg') },
+          ], platform: [
+            { photo: require('@/assets/platform-C.jpg') },
+          ] },
+        { category: 'C', cars: [
+            { photo: require('@/assets/car-C.jpg') },
+            { photo: require('@/assets/car-C-1.jpg') },
+            { photo: require('@/assets/car-C-2.jpg') },
+          ], platform: [
+            { photo: require('@/assets/platform-C.jpg') },
+          ] },
+        { category: 'C', cars: [
+            { photo: require('@/assets/car-C.jpg') },
+            { photo: require('@/assets/car-C-1.jpg') },
+            { photo: require('@/assets/car-C-2.jpg') },
+          ], platform: [
+            { photo: require('@/assets/platform-C.jpg') },
+          ] },
       ],
       sliderItemsBreakpoints: {
         xl: 2, lg: 3, md: 4, sm: 6, cols: 12
@@ -287,16 +344,16 @@ export default {
         { text: "Категория", value: 'category', align: 'center' },
         { text: "Стоимость", value: 'price', align: 'center' },
         { text: "Автопарк", value: 'cars', align: 'center' },
-        { text: "Площадки", value: 'cars', align: 'center' },
-        { text: "Документы", value: 'docs', align: 'center' },
+        // { text: "Площадки", value: 'cars', align: 'center' },
+        { text: "Документы (условия)", value: 'docs', align: 'center' },
       ],
       categories: [
-        { category: "A", price: "10000", docs: 'Паспорт, военные билет (приписное), бла, бла, бла'},
-        { category: "A", price: "10000", docs: 'Паспорт, военные билет (приписное), бла, бла, бла'},
-        { category: "A", price: "10000", docs: 'Паспорт, военные билет (приписное), бла, бла, бла'},
-        { category: "A", price: "10000", docs: 'Паспорт, военные билет (приписное), бла, бла, бла'},
-        { category: "A", price: "10000", docs: 'Паспорт, военные билет (приписное), бла, бла, бла'},
-        { category: "A", price: "10000", docs: 'Паспорт, военные билет (приписное), бла, бла, бла'},
+        { category: "A", price: "7000", cars: 0, docs: 'Паспорт, медицинская справка, фото (3.5 x 4.5), аттестат или диплом об образовании'},
+        { category: "B", price: "13000", cars: 1, docs: 'Паспорт, медицинская справка, фото (3.5 x 4.5), аттестат или диплом об образовании'},
+        { category: "C", price: "15000", cars: 2, docs: 'Паспорт, медицинская справка, фото (3.5 x 4.5), аттестат или диплом об образовании'},
+        { category: "BC", price: "25000", cars: 2, docs: 'Паспорт, медицинская справка, фото (3.5 x 4.5), аттестат или диплом об образовании'},
+        { category: "CE", price: "15000", cars: 4, docs: 'Паспорт, медицинская справка, фото (3.5 x 4.5), водительское удостоверение, аттестат или диплом об образовании, стаж вождение не менее 1 года'},
+        { category: "C → D", price: "20000", cars: 3, docs: 'Паспорт, медицинская справка, фото (3.5 x 4.5), водительское удостоверение, аттестат или диплом об образовании, возраст 21 год'},
       ]
     })
 }

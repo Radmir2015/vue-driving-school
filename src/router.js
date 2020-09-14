@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import goTo from 'vuetify/es5/services/goto'
-import Home from './views/Home.vue'
+// import Home from './views/Home.vue'
 
 Vue.use(Router)
 
@@ -11,15 +11,16 @@ export default new Router({
     routes: [
         {
             path: '/',
-            name: 'home',
-            component: Home
-        },
-        {
-            path: '/about',
             name: 'about',
-            // component: Home
+            alias: '/about',
             component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
         },
+        // {
+        //     path: '/about',
+        //     name: 'about',
+        //     // component: Home
+        //     component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
+        // },
         {
             path: '/docs',
             name: 'docs',
@@ -47,6 +48,13 @@ export default new Router({
             // return savedPosition || { x: 0, y: 0 }
         }
 
-        return goTo(scrollTo)
+        // let scrollTemp = scrollTo
+        try {
+            return goTo(scrollTo)
+        } catch {
+            console.log('Not found the element to scroll to')
+            return scrollTo
+        }
+        // return scrollTemp
     }
 })

@@ -37,10 +37,10 @@
                             <v-img :src="image.photo" class="align-self-center"></v-img>
                         </v-col> -->
                         <draggable class="row" v-model="event.images" @start="drag = true" @end="drag = false">
-                            <v-col cols="12" :sm="Math.max(3, 12 / event.images.length)" v-for="(image) in event.images" :key="`${image.photo}-${image.id}`" class="d-flex">
+                            <v-col cols="12" :sm="Math.max(4, 12 / event.images.length)" v-for="(image) in event.images" :key="`${image.photo}-${image.id}`" class="d-flex">
                             <v-item v-slot:default="{ active, toggle }" :value="image.id">
                                 <v-img :src="image.photo" class="text-right pa-2">
-                                    <v-btn fab small @click="toggle">
+                                    <v-btn fab small @click="toggle" class="py-0">
                                         <v-icon large>{{ active ? 'mdi-close-circle' : 'mdi-close-circle-outline' }}</v-icon>
                                     </v-btn>
                                 <v-overlay :absolute="true" :value="active" opacity="0.7">
@@ -105,6 +105,7 @@
 
 <script>
 import { db, storage, storageRef } from "@/fb"
+import Compressor from 'compressorjs'
 import draggable from 'vuedraggable'
 
 export default {
@@ -205,11 +206,13 @@ export default {
         this.loading.deleteButton = true
 
         if (this.event.id) {
-            this.event.images.map(img => {
-                storage.refFromURL(img.photo).delete()
-                    .then(() => console.log('Successfully deleted file'))
-                    .catch((err) => console.error(err))
-            })
+            if (this.event.images && this.event.images.length > 0) {
+              this.event.images.map(img => {
+                  storage.refFromURL(img.photo).delete()
+                      .then(() => console.log('Successfully deleted file'))
+                      .catch((err) => console.error(err))
+              })
+            }
 
             await db.collection('events').doc(this.event.id).delete()
 
@@ -251,9 +254,10 @@ export default {
         console.log('deleted extra info', this.event.images)
     },
     async uploadFile(file) {
+        const compressedFile = await this.compressImage(file)
         return new Promise((resolve, reject) => {
             // Upload file and metadata to the object 'images/mountains.jpg'
-            let uploadTask = storageRef.child('images/events/' + file.name).put(file);
+            let uploadTask = storageRef.child('images/events/' + file.name).put(compressedFile);
     
             // Listen for state changes, errors, and completion of the upload.
             uploadTask.on('state_changed',
@@ -279,6 +283,20 @@ export default {
               });
             });
         })
+    },
+    async compressImage(file, quality = 0.6) {
+      return new Promise((resolve, reject) => {
+        new Compressor(file, {
+          quality: quality,
+          success(result) {
+            resolve(result)
+          },
+          error(err) {
+            console.log(err.message)
+            reject(err)
+          },
+        })
+      })
     },
     filesChanged() {
         // this.files = event.map(file => ({ photo: (window.URL || window.webkitURL).createObjectURL(file), type: 'fromFile' }))
