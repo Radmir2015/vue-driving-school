@@ -147,7 +147,7 @@
         <!-- <v-divider></v-divider> -->
         <!-- <h2 class="text-center title">Необходимые документы</h2> -->
         <!-- <v-divider></v-divider> -->
-        <h2 class="text-center title">Наши мастера</h2>
+        
         <v-container>
           <!-- <v-carousel cycle height="100%" hide-delimiter-background hide-delimiters>
             <v-carousel-item v-for="index in arr(amountSliderPages)" :key="index">
@@ -164,7 +164,20 @@
               </v-sheet>
             </v-carousel-item>
           </v-carousel> -->
-          <CarouselOrItem :items="masters" :sliderItemsBreakpoints="sliderItemsBreakpoints" :aspectRatio="1" imageStyle="max-height: 250px" :avatar="true"></CarouselOrItem>
+          <v-row class="justify-center">
+            <v-col cols="12" class="py-0">
+              <h2 class="text-center title">Мастера</h2>
+              <CarouselOrItem :items="masters" :sliderItemsBreakpoints="sliderItemsBreakpoints" :aspectRatio="1" imageStyle="max-height: 250px" :avatar="true"></CarouselOrItem>
+            </v-col>
+            <v-col md="6" class="py-0">
+              <h2 class="text-center title">Преподаватели</h2>
+              <CarouselOrItem :items="teachers" :sliderItemsBreakpoints="miniSliderItemsBreakpoints" :aspectRatio="1" imageStyle="max-height: 250px" :avatar="true"></CarouselOrItem>
+            </v-col>
+            <v-col md="6" class="py-0">
+              <h2 class="text-center title">Руководство</h2>
+              <CarouselOrItem :items="bosses" :sliderItemsBreakpoints="miniSliderItemsBreakpoints" :aspectRatio="1" imageStyle="max-height: 250px" :avatar="true"></CarouselOrItem>
+            </v-col>
+          </v-row>
         </v-container>
         <v-divider></v-divider>
         <h2 class="text-center title">Контакты</h2>
@@ -252,21 +265,6 @@ export default {
       tab: 1,
       masters: [
         {
-          name: "Шиманский Александр Богданович",
-          exp: `Cтаж работы в автошколе ${new Date().getFullYear() - 1998} лет`,
-          photo: require('@/assets/userImage.png')
-        },
-        {
-          name: "Волков Виктор Иванович",
-          exp: `Cтаж работы в автошколе ${new Date().getFullYear() - 2006} лет`,
-          photo: require('@/assets/userImage.png')
-        },
-        {
-          name: "Афонькин Юрий Леонидович",
-          exp: `Cтаж работы в автошколе ${new Date().getFullYear() - 2006} лет`,
-          photo: require('@/assets/userImage.png')
-        },
-        {
           name: "Панькин Владимир Александрович",
           exp: `Cтаж работы в автошколе ${new Date().getFullYear() - 1983} лет`,
           photo: require('@/assets/userImage.png')
@@ -293,6 +291,25 @@ export default {
         },
         {
           name: "Сенаторов Александр Михайлович",
+          exp: `Cтаж работы в автошколе ${new Date().getFullYear() - 2006} лет`,
+          photo: require('@/assets/userImage.png')
+        },
+      ],
+      teachers: [
+        {
+          name: "Шиманский Александр Богданович",
+          exp: `Cтаж работы в автошколе ${new Date().getFullYear() - 1998} лет`,
+          photo: require('@/assets/userImage.png')
+        },
+        {
+          name: "Волков Виктор Иванович",
+          exp: `Cтаж работы в автошколе ${new Date().getFullYear() - 2006} лет`,
+          photo: require('@/assets/userImage.png')
+        },
+      ],
+      bosses: [
+        {
+          name: "Афонькин Юрий Леонидович",
           exp: `Cтаж работы в автошколе ${new Date().getFullYear() - 2006} лет`,
           photo: require('@/assets/userImage.png')
         },
@@ -339,6 +356,9 @@ export default {
       ],
       sliderItemsBreakpoints: {
         xl: 2, lg: 3, md: 4, sm: 6, cols: 12
+      },
+      miniSliderItemsBreakpoints: {
+        xl: 4, lg: 6, md: 12, sm: 12, cols: 12
       },
       categoriesHeaders: [
         { text: "Категория", value: 'category', align: 'center' },

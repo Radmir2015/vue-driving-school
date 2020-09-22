@@ -13,7 +13,7 @@
                     </v-btn>
                     </template>
                 </EventDialog>
-                <v-card class="pa-4 mb-2" v-for="(event, index) in events" :key="`${event.title}-${index}`">
+                <v-card class="pa-4 mb-2" v-for="(event, index) in events" :key="event.published.toLocaleString()">
                     <v-container class="pt-0" >
                         <p class="title pa-0 ma-0 align-self-center">{{ event.title }}</p>
                         <v-spacer></v-spacer>
@@ -56,7 +56,7 @@ export default {
       CarouselOrItem, EventDialog
     },
     data: () => ({
-        editMode: false,
+        // editMode: false,
         events: [
             // { title: 'Hello world', published: new Date(), body: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. At alias repellat voluptate tempore impedit numquam sint similique obcaecati inventore pariatur. Facilis ut, \nofficiis eum laborum dicta excepturi illum quaerat! Numquam dolore sequi voluptas, harum molestias \naccusamus incidunt culpa tempore dolor modi explicabo saepe delectus nulla necessitatibus illo distinctio officia reprehenderit.', images: [ { photo: 'https://picsum.photos/800/498?random'}, { photo: 'https://picsum.photos/800/300?random' } ] },
             // { title: 'Hello world', published: new Date(), body: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. At alias repellat voluptate tempore impedit numquam sint similique obcaecati inventore pariatur. Facilis ut, officiis eum laborum dicta excepturi illum quaerat! Numquam dolore sequi voluptas, harum molestias accusamus incidunt culpa tempore dolor modi explicabo saepe delectus nulla necessitatibus illo distinctio officia reprehenderit.', images: [ { photo: 'https://picsum.photos/800/498?random'} ] },
