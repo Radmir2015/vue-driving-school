@@ -31,10 +31,11 @@ export default {
     
   }),
   methods: {
-    ...mapActions(['GET_DOCS'])
+    ...mapActions(['GET_DOCS', 'GET_REVIEWS'])
   },
   mounted() {
     this.GET_DOCS()
+    this.GET_REVIEWS()
   }
 };
 </script>

@@ -8,8 +8,11 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
         isLogin: false,
+
         docs: [],
         activeDoc: '',
+
+        reviews: [],
     },
     mutations: {
         CHANGE_LOGIN: (state, value) => {
@@ -21,8 +24,9 @@ export default new Vuex.Store({
         SET_ACTIVE_DOC: (state, value) => state.activeDoc = value,
 
         REMOVE_DOC: (state, index) => state.docs.splice(index, 1),
-        SAVE_DOC: (state, {doc, index}) => state.docs[index] = doc
-        
+        SAVE_DOC: (state, {doc, index}) => state.docs[index] = doc,
+
+        PUSH_REVIEW: (state, { value, method = 'push' }) => state.reviews[method](value)
     },
     actions: {
         TOGGLE_LOGIN({commit}, value) {
@@ -58,7 +62,18 @@ export default new Vuex.Store({
             commit('SAVE_DOC', { doc, index })
 
         },
-        GET_DOC: ({state}, index) => state.docs[index], 
+        GET_DOC: ({state}, index) => state.docs[index],
+
+        GET_REVIEWS: async ({commit}) => {
+            const snapshot = await db.collection('reviews').orderBy("published", "desc").get()
+            snapshot.docs.map(doc => {
+                const chunk = doc.data()
+                chunk.text = chunk.text.replace('\\n', '\n')
+                chunk.published = chunk.published.toDate()
+
+                commit('PUSH_REVIEW', { value: chunk, method: 'push' })
+            })
+        }
     },
     getters: {
         LOGIN_STATE(state) {
@@ -70,6 +85,8 @@ export default new Vuex.Store({
         ACTIVE_DOC_INDEX: state => state.docs.findIndex(x => x.tag === state.activeDoc),
 
         // GET_DOC: (state, index) => state.docs[index],
-        LAST_DOC: state => state.docs[state.docs.length - 1]
+        LAST_DOC: state => state.docs[state.docs.length - 1],
+
+        REVIEWS_STATE: state => state.reviews
     }
 })
