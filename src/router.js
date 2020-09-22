@@ -31,6 +31,11 @@ export default new Router({
             name: 'events',
             component: () => import(/* webpackChunkName: "events" */ './views/Events.vue')
         },
+        {
+            path: '/reviews',
+            name: 'reviews',
+            component: () => import(/* webpackChunkName: "reviews" */ './views/Reviews.vue')
+        },
     ],
     scrollBehavior: function (to, from, savedPosition) {
         // console.log(to)
