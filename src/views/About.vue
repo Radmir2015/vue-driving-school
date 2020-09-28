@@ -229,7 +229,8 @@
 
 <script>
 // import Carousel from '../components/Carousel';
-import CarouselOrItem from '../components/CarouselOrItem';
+import { db } from '@/fb'
+import CarouselOrItem from '../components/CarouselOrItem'
 
 export default {
     name: 'About',
@@ -246,6 +247,10 @@ export default {
           // vm.expandedPanels[vm.ACTIVE_DOC_INDEX] = 0
         })
       } else next()
+    },
+    async created() {
+        const gotData = (await db.collection('categories').orderBy('index').get()).docs.map(doc => doc.data())
+        if (gotData.length > 0) this.categories = gotData
     },
     computed: {
       itemsPerSlide() {
