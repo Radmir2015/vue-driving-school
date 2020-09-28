@@ -7,11 +7,13 @@
                         Отправить отзыв
                     </h3>
                     <v-text-field
+                        v-model="author"
                         dense
                         label="Имя"
                         prepend-icon="mdi-account"
                     />
                     <v-textarea
+                        v-model="text"
                         dense
                         counter
                         label="Текст отзыва"
@@ -29,12 +31,15 @@
         </h3>
         <v-row>
             <v-col sm="10" offset-sm="1" class="pa-0">
-                <v-card v-for="(review, index) in REVIEWS_STATE" :key="index" class="mb-2">
+                <v-card v-for="(review, index) in REVIEWS_STATE" :key="review.id" class="mb-2">
                     <v-card-title>
                         <p class="title pa-0 ma-0 align-self-center">{{ review.author }}</p>
                         <v-container class="d-flex pa-0" fluid>
                             <v-icon left small>mdi-clock</v-icon>
                             <p class="text-body-1 pa-0 ma-0 align-self-center">{{ new Date(review.published).toLocaleString() }}</p>
+                            <v-btn v-if="LOGIN_STATE" icon class="align-self-center" @click="deleteReview(review.id, index)">
+                                <v-icon>mdi-close</v-icon>
+                            </v-btn>
                         </v-container>
                     </v-card-title>
                     <v-card-text>
@@ -47,14 +52,16 @@
 </template>
 
 <script>
-// import { db } from '@/fb'
-import { mapGetters } from 'vuex'
+import { db } from '@/fb'
+import { mapGetters, mapMutations } from 'vuex'
 
 export default {
     data: () => ({
-        
+        author: '',
+        text: ''
     }),
     methods: {
+        ...mapMutations(['PUSH_REVIEW', 'REMOVE_REVIEW']),
         async submit() {
             // const captchaResponse = grecaptcha.getResponse()
             console.log(window.grecaptcha.getResponse())
@@ -62,6 +69,15 @@ export default {
             if (window.grecaptcha.getResponse()) {
 
                 // send review here
+                const newReview = { author: this.author, text: this.text.replace(/↵/g, '\n'), published: new Date() }
+
+                console.log(newReview)
+
+                const id = (await db.collection('reviews').add(newReview)).id
+
+                this.PUSH_REVIEW({ value: { id, ...newReview }, method: 'unshift' })
+
+                this.author = this.text = ''
 
                 // parsing function of reviews in original site
                 // [...document.querySelectorAll('.commentstd')].slice(1).map((el) => ({
@@ -77,10 +93,14 @@ export default {
 
                 window.grecaptcha.reset()
             }
+        },
+        async deleteReview(id, index) {
+            await db.collection('reviews').doc(id).delete()
+            this.REMOVE_REVIEW(index)
         }
     },
     computed: {
-        ...mapGetters(['REVIEWS_STATE'])
+        ...mapGetters(['LOGIN_STATE', 'REVIEWS_STATE'])
     },
     mounted() {
         const recaptchaScript = document.createElement('script')
