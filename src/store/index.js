@@ -26,7 +26,8 @@ export default new Vuex.Store({
         REMOVE_DOC: (state, index) => state.docs.splice(index, 1),
         SAVE_DOC: (state, {doc, index}) => state.docs[index] = doc,
 
-        PUSH_REVIEW: (state, { value, method = 'push' }) => state.reviews[method](value)
+        PUSH_REVIEW: (state, { value, method = 'push' }) => state.reviews[method](value),
+        REMOVE_REVIEW: (state, index) => state.reviews.splice(index, 1)
     },
     actions: {
         TOGGLE_LOGIN({commit}, value) {
@@ -70,6 +71,7 @@ export default new Vuex.Store({
                 const chunk = doc.data()
                 chunk.text = chunk.text.replace('\\n', '\n')
                 chunk.published = chunk.published.toDate()
+                chunk.id = doc.id
 
                 commit('PUSH_REVIEW', { value: chunk, method: 'push' })
             })
