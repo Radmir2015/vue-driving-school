@@ -174,7 +174,7 @@
               <CarouselOrItem :items="teachers" :sliderItemsBreakpoints="miniSliderItemsBreakpoints" :aspectRatio="1" imageStyle="max-height: 250px" :avatar="true"></CarouselOrItem>
             </v-col>
             <v-col md="6" class="py-0">
-              <h2 class="text-center title">Руководство</h2>
+              <h2 class="text-center title">Начальник учреждения</h2>
               <CarouselOrItem :items="bosses" :sliderItemsBreakpoints="miniSliderItemsBreakpoints" :aspectRatio="1" imageStyle="max-height: 250px" :avatar="true"></CarouselOrItem>
             </v-col>
           </v-row>
@@ -202,6 +202,10 @@
 
                   <p>
                     <v-icon>mdi-clock-outline</v-icon> <span class="font-weight-bold">График работы:</span> понедельник - пятница, с 8:00 до 17:00
+                  </p>
+
+                  <p>
+                    <v-icon>mdi-coffee</v-icon> <span class="font-weight-bold">Перерыв:</span> с 12:00 до 13:00
                   </p>
 
                   <p>
@@ -251,31 +255,6 @@ export default {
     async created() {
         const gotData = (await db.collection('categories').orderBy('index').get()).docs.map(doc => doc.data())
         if (gotData.length > 0) this.categories = gotData
-      
-        const yaDiv = document.createElement('div')
-        yaDiv.setAttribute('id', 'yandex_rtb_R-A-642772-1')
-        document.body.appendChild(yaDiv)
-
-        const yaScript = document.createElement('script')
-        yaScript.setAttribute('type', 'text/javascript')
-        yaScript.innerHTML = `(function(w, d, n, s, t) {
-            w[n] = w[n] || [];
-            w[n].push(function() {
-                Ya.Context.AdvManager.render({
-                    blockId: "R-A-642772-1",
-                    renderTo: "yandex_rtb_R-A-642772-1",
-                    async: true
-                });
-            });
-            t = d.getElementsByTagName("script")[0];
-            s = d.createElement("script");
-            s.type = "text/javascript";
-            s.src = "//an.yandex.ru/system/context.js";
-            s.async = true;
-            t.parentNode.insertBefore(s, t);
-        })(this, this.document, "yandexContextAsyncCallbacks");`
-
-          document.head.appendChild(yaScript)
     },
     computed: {
       itemsPerSlide() {
