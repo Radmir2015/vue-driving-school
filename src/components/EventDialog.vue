@@ -62,6 +62,16 @@
                     <v-chip small label close @click:close="$delete(files, index)">{{ text }}</v-chip>
                 </template>
             </v-file-input>
+            <v-text-field
+              v-model="quality"
+              v-show="files.length > 0"
+              label="Качество фотографий"
+              prepend-icon="mdi-quality-high"
+              type="number"
+              step="0.05"
+              min="0"
+              max="1"
+            ></v-text-field>
           </v-form>
         </v-card-text>
         <v-divider></v-divider>
@@ -137,6 +147,7 @@ export default {
     photosToDelete: [],
     drag: false,
     files: [],
+    quality: 0.6,
   }),
   watch: {
       files: function() {
@@ -254,7 +265,7 @@ export default {
         console.log('deleted extra info', this.event.images)
     },
     async uploadFile(file) {
-        const compressedFile = await this.compressImage(file)
+        const compressedFile = await this.compressImage(file, +this.quality)
         return new Promise((resolve, reject) => {
             // Upload file and metadata to the object 'images/mountains.jpg'
             let uploadTask = storageRef.child('images/events/' + file.name).put(compressedFile);
