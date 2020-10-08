@@ -251,6 +251,31 @@ export default {
     async created() {
         const gotData = (await db.collection('categories').orderBy('index').get()).docs.map(doc => doc.data())
         if (gotData.length > 0) this.categories = gotData
+      
+        const yaDiv = document.createElement('div')
+        yaDiv.setAttribute('id', 'yandex_rtb_R-A-642772-1')
+        document.body.appendChild(yaDiv)
+
+        const yaScript = document.createElement('script')
+        yaScript.setAttribute('type', 'text/javascript')
+        yaScript.innerHTML = `(function(w, d, n, s, t) {
+            w[n] = w[n] || [];
+            w[n].push(function() {
+                Ya.Context.AdvManager.render({
+                    blockId: "R-A-642772-1",
+                    renderTo: "yandex_rtb_R-A-642772-1",
+                    async: true
+                });
+            });
+            t = d.getElementsByTagName("script")[0];
+            s = d.createElement("script");
+            s.type = "text/javascript";
+            s.src = "//an.yandex.ru/system/context.js";
+            s.async = true;
+            t.parentNode.insertBefore(s, t);
+        })(this, this.document, "yandexContextAsyncCallbacks");`
+
+          document.head.appendChild(yaScript)
     },
     computed: {
       itemsPerSlide() {
