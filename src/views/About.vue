@@ -348,17 +348,17 @@ export default {
           ], platform: [
             { photo: require('@/assets/platform-C.jpg') },
           ] },
-        { category: 'C', cars: [
+        { category: 'D', cars: [
             { photo: require('@/assets/car-C.jpg') },
             { photo: require('@/assets/car-C-1.jpg') },
             { photo: require('@/assets/car-C-2.jpg') },
           ], platform: [
             { photo: require('@/assets/platform-C.jpg') },
           ] },
-        { category: 'C', cars: [
-            { photo: require('@/assets/car-C.jpg') },
-            { photo: require('@/assets/car-C-1.jpg') },
-            { photo: require('@/assets/car-C-2.jpg') },
+        { category: 'E', cars: [
+            { photo: require('@/assets/car-E.jpg') },
+            { photo: require('@/assets/car-E-1.jpg') },
+            { photo: require('@/assets/car-E-2.jpg') },
           ], platform: [
             { photo: require('@/assets/platform-C.jpg') },
           ] },
