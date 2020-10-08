@@ -38,7 +38,7 @@
 
                     <p class="text-justify text-body-1 mb-2" style="text-indent: 2em" v-for="(chunk, ind) in event.body.split('\n')" :key="ind">{{ chunk }}</p>
 
-                    <CarouselOrItem :items="event.images" :sliderItemsBreakpoints="{cols: 12}" :aspectRatio="2"></CarouselOrItem> 
+                    <CarouselOrItem :items="event.images" flat :sliderItemsBreakpoints="{cols: 12}" :aspectRatio="16 / 9" :avatar="true"></CarouselOrItem> 
                 </v-card>
             </v-col>
         </v-row>
