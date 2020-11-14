@@ -72,7 +72,7 @@
         cols="12"
       >
         <h2 class="headline font-weight-bold mb-3">
-          Ecosystem
+          Ecosystem {{ msg }}
         </h2>
 
         <v-row justify="center">
@@ -94,6 +94,7 @@
 <script>
   export default {
     name: 'HelloWorld',
+    props: ['msg'],
 
     data: () => ({
       ecosystem: [
