@@ -1,12 +1,13 @@
 // https://docs.cypress.io/api/introduction/api.html
 
-before(() => {  
-  cy.visit(Cypress.env('BASE_URL'))
+before(() => {
+  cy.url().then(url => (Cypress.config().baseUrl !== url) && cy.visit('/'))
 })
 
 describe('Site\'s header', () => {
   it('has right title name', () => {
-    cy.contains('a[href="/about"]', 'ДОСААФ Каменка')
+    cy.get('a[href="/about"]')
+      .contains('ДОСААФ Каменка')
   })
 
   it('has right number of navigation links', () => {
@@ -14,8 +15,35 @@ describe('Site\'s header', () => {
       .should('have.length', 3)
   })
 
-  it('has categories menu and login button', () => {
-    cy.get('.container > button.v-btn')
-      .should('have.length', 2)
+  context('Categories Menu and Login Button', () => {
+    beforeEach(() => {
+      cy.get('.container > button.v-btn')
+        .as('menuLogin')
+        .should('have.length', 2)
+    })
+  
+    it('has categories menu button and working dropdown menu', () => {
+      cy.get('@menuLogin')
+        .first()
+        .should('have.text', ' Категории ')
+        .and('have.attr', 'aria-expanded', 'false')
+        .click()
+        .should('have.attr', 'aria-expanded', 'true')
+  
+      cy.get('[role=menu]')
+        .find('a')
+        .should('have.length', 5)
+        .should($menuLink => expect($menuLink.text().startsWith('Категория')).eql(true))
+      })
+  
+    it('has popping out login form', () => {
+      cy.get('@menuLogin')
+        .last()
+        .contains(/Вы?ход/)
+        .click()
+        .then(() =>
+          cy.contains('Вход для администраторов')
+        )
+    })
   })
 })

@@ -1,7 +1,5 @@
 {
   "pluginsFile": "tests/e2e/plugins/index.js",
   "port": 8000,
-  "env": {
-    "BASE_URL": "http://localhost:8080/"
-  }
+  "baseUrl": "http://localhost:8080/"
 }
