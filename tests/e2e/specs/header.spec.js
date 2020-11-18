@@ -1,10 +1,10 @@
 // https://docs.cypress.io/api/introduction/api.html
 
-before(() => {
-  cy.url().then(url => (Cypress.config().baseUrl !== url) && cy.visit('/'))
-})
-
 describe('Site\'s header', () => {
+  before(() => {
+    cy.url().then(url => (Cypress.config().baseUrl !== url) && cy.visit('/'))
+  })
+
   it('has right title name', () => {
     cy.get('a[href="/about"]')
       .contains('ДОСААФ Каменка')
@@ -25,6 +25,7 @@ describe('Site\'s header', () => {
     it('has categories menu button and working dropdown menu', () => {
       cy.get('@menuLogin')
         .first()
+        .as('login')
         .should('have.text', ' Категории ')
         .and('have.attr', 'aria-expanded', 'false')
         .click()
@@ -34,7 +35,10 @@ describe('Site\'s header', () => {
         .find('a')
         .should('have.length', 5)
         .should($menuLink => expect($menuLink.text().startsWith('Категория')).eql(true))
-      })
+
+      cy.get('@login')
+        .trigger('mouseleave')
+    })
   
     it('has popping out login form', () => {
       cy.get('@menuLogin')
@@ -43,7 +47,12 @@ describe('Site\'s header', () => {
         .click()
         .then(() =>
           cy.contains('Вход для администраторов')
+            .type('{esc}')
+            .should('not.be.visible')
         )
+
+      cy.focused()
+        .blur()
     })
   })
 })
