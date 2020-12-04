@@ -41,6 +41,13 @@ describe('Site\'s header', () => {
     })
   
     it('has popping out login form', () => {
+      cy.loggedIn()
+        .then(logged =>
+          logged && cy.get('@menuLogin')
+          .last()
+          .contains('Выход')
+          .click())
+
       cy.get('@menuLogin')
         .last()
         .contains(/Вы?ход/)
