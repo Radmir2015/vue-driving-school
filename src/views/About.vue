@@ -349,9 +349,7 @@ export default {
             { photo: require('@/assets/platform-C.jpg') },
           ] },
         { category: 'D', cars: [
-            { photo: require('@/assets/car-C.jpg') },
-            { photo: require('@/assets/car-C-1.jpg') },
-            { photo: require('@/assets/car-C-2.jpg') },
+            { photo: require('@/assets/car-D.jpg') },
           ], platform: [
             { photo: require('@/assets/platform-C.jpg') },
           ] },
